@@ -2,15 +2,19 @@
 
 /**
  * 表示位置。half=1 は「半ページめくり」済みの状態で、
- * 上半分に次ページの上半分、下半分に現在ページの下半分が見えている。
+ * 分割線より上に次ページ、下に現在ページが見えている。
  */
 export interface Pos {
   page: number
   half: 0 | 1
 }
 
-/** ページの所要時間のうち、上半分を次ページへ差し替える時点の割合 */
-export const HALF_POINT = 0.6
+export interface PageTiming {
+  /** ページ全体の演奏にかかる秒数 */
+  duration: number
+  /** 上側を次ページへ差し替える時点(ページ頭からの秒数) */
+  halfAt: number
+}
 
 export function nextPos(pos: Pos, pageCount: number, halfTurn: boolean): Pos {
   if (pos.page >= pageCount - 1) return pos
@@ -29,23 +33,23 @@ export function pageDuration(bars: number, beatsPerBar: number, bpm: number): nu
   return (bars * beatsPerBar * 60) / bpm
 }
 
-/** その表示位置に手動で移動したとき、ページ内経過時間をどこに合わせるか */
-export function elapsedForPos(pos: Pos, duration: number): number {
-  return pos.half === 1 ? duration * HALF_POINT : 0
-}
-
 export interface Clock {
   pos: Pos
-  /** 現在ページ内の経過秒。負の値はカウントイン中 */
+  /** 現在ページ内の経過秒 */
   elapsed: number
   finished: boolean
+}
+
+/** その表示位置に手動で移動したときの時計 */
+export function clockForPos(pos: Pos, timing: PageTiming): Clock {
+  return { pos, elapsed: pos.half === 1 ? timing.halfAt : 0, finished: false }
 }
 
 /** dt 秒だけ時計を進め、必要ならページ(または半ページ)をめくる */
 export function tick(
   clock: Clock,
   dt: number,
-  durationOf: (page: number) => number,
+  timingOf: (page: number) => PageTiming,
   pageCount: number,
   halfTurn: boolean,
 ): Clock {
@@ -53,15 +57,15 @@ export function tick(
   let elapsed = clock.elapsed + dt
   const last = pageCount - 1
   for (;;) {
-    const T = durationOf(page)
-    if (elapsed >= T) {
-      if (page >= last) return { pos: { page, half: 0 }, elapsed: T, finished: true }
-      elapsed -= T
+    const { duration, halfAt } = timingOf(page)
+    if (elapsed >= duration) {
+      if (page >= last) return { pos: { page, half: 0 }, elapsed: duration, finished: true }
+      elapsed -= duration
       page += 1
       half = 0
       continue
     }
-    if (halfTurn && half === 0 && page < last && elapsed >= T * HALF_POINT) half = 1
+    if (halfTurn && half === 0 && page < last && elapsed >= halfAt) half = 1
     return { pos: { page, half }, elapsed, finished: false }
   }
 }

@@ -197,7 +197,7 @@ button.primary {
   padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
   background: var(--bg);
   border-top: 1px solid var(--line);
-  overflow-x: auto;
+  flex-wrap: wrap;
 }
 
 .toolbar > * {
@@ -315,5 +315,88 @@ button.primary {
 
 .check small {
   display: block;
+  color: var(--muted);
+}
+
+/* ---------- 段マーク・現在位置 ---------- */
+
+.cursor {
+  position: absolute;
+  width: 6px;
+  transform: translateY(-50%);
+  background: var(--accent);
+  border-radius: 0 3px 3px 0;
+  pointer-events: none;
+}
+
+.mark {
+  position: absolute;
+  height: 0;
+  border-top: 2px dashed var(--accent);
+}
+
+.mark-controls {
+  position: absolute;
+  right: 4px;
+  top: 0;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.mark-controls button {
+  width: 40px;
+  min-height: 40px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 1.2rem;
+}
+
+.mark-controls output {
+  min-width: 3.5em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.markbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 8px;
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.markbar button {
+  flex: none;
+}
+
+.pager {
+  display: inline-flex;
+  align-items: center;
+}
+
+.pager button {
+  width: 40px;
+  padding: 0;
+  font-size: 1.3rem;
+}
+
+.listen {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.listen[data-playing='true'] {
+  color: var(--accent);
+}
+
+.fixed {
   color: var(--muted);
 }

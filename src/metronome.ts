@@ -1,9 +1,10 @@
 let ctx: AudioContext | null = null
 
-/** ユーザー操作(再生ボタン)の中で呼ぶこと。iOS では操作起点でないと音が出ない */
-export function unlockAudio(): void {
+/** ユーザー操作(開始ボタン)の中で最初に呼ぶこと。iOS では操作起点でないと音が出ない */
+export function audioContext(): AudioContext {
   ctx ??= new AudioContext()
   if (ctx.state === 'suspended') void ctx.resume()
+  return ctx
 }
 
 export function click(accent: boolean): void {

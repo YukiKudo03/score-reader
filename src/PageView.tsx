@@ -6,12 +6,14 @@ interface Props {
   index: number
   boxW: number
   boxH: number
-  /** full: 全体表示 / top: 上半分だけ表示(半ページめくり) / hidden: 先読みのみ */
+  /** full: 全体表示 / top: 分割線より上だけ表示(半ページめくり) / hidden: 先読みのみ */
   clip: 'full' | 'top' | 'hidden'
+  /** 分割線の位置(ページ高さに対する割合) */
+  split: number
 }
 
 /** ステージ中央に1ページを収まる最大サイズで描画する */
-export const PageView = memo(function PageView({ source, index, boxW, boxH, clip }: Props) {
+export const PageView = memo(function PageView({ source, index, boxW, boxH, clip, split }: Props) {
   const ref = useRef<HTMLCanvasElement>(null)
   const [aspect, setAspect] = useState<number | null>(null)
 
@@ -51,7 +53,7 @@ export const PageView = memo(function PageView({ source, index, boxW, boxH, clip
         width: w,
         height: h,
         visibility: clip === 'hidden' ? 'hidden' : 'visible',
-        clipPath: clip === 'top' ? 'inset(0 0 50% 0)' : undefined,
+        clipPath: clip === 'top' ? `inset(0 0 ${(1 - split) * 100}% 0)` : undefined,
       }}
     />
   )

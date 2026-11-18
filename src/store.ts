@@ -1,4 +1,5 @@
 import { del, get, set } from 'idb-keyval'
+import type { System } from './layout'
 
 export interface ScoreSettings {
   bpm: number
@@ -7,8 +8,14 @@ export interface ScoreSettings {
   defaultBars: number
   /** ページ番号(0始まり) → そのページの小節数 */
   barsByPage: Record<number, number>
+  /** ページ番号(0始まり) → 段マーク(上から順)。あるページでは小節数はここから求める */
+  systems: Record<number, System[]>
   halfTurn: boolean
   metronome: boolean
+  /** マイクで演奏を聴き、弾いている間だけ進める */
+  listen: boolean
+  /** 音が消えてから「止まった」と判断するまでの拍数 */
+  holdBeats: number
   lastPage: number
 }
 
@@ -25,8 +32,11 @@ export const defaultSettings: ScoreSettings = {
   beatsPerBar: 4,
   defaultBars: 16,
   barsByPage: {},
+  systems: {},
   halfTurn: true,
   metronome: false,
+  listen: false,
+  holdBeats: 2,
   lastPage: 0,
 }
 
@@ -34,7 +44,9 @@ const LIST_KEY = 'scores'
 const filesKey = (id: string) => `files:${id}`
 
 export async function listScores(): Promise<ScoreMeta[]> {
-  return (await get<ScoreMeta[]>(LIST_KEY)) ?? []
+  const list = (await get<ScoreMeta[]>(LIST_KEY)) ?? []
+  // 旧バージョンで保存した楽譜に、後から増えた設定項目を補う
+  return list.map((s) => ({ ...s, settings: { ...defaultSettings, ...s.settings } }))
 }
 
 export async function addScore(files: File[]): Promise<ScoreMeta> {
