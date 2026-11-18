@@ -1,0 +1,319 @@
+:root {
+  --bg: #1b1d22;
+  --panel: #262930;
+  --line: #3a3e48;
+  --text: #ecebe6;
+  --muted: #a3a6ae;
+  --accent: #e0a13a;
+  --accent-text: #1b1d22;
+  color-scheme: dark;
+  font-family: system-ui, -apple-system, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 14px;
+  min-height: 44px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+button:disabled {
+  opacity: 0.5;
+}
+
+button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+/* ---------- 一覧 ---------- */
+
+.library {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: calc(16px + env(safe-area-inset-top)) 16px 32px;
+}
+
+.library header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.library h1 {
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.library .empty {
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.library ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.library li {
+  display: flex;
+  gap: 8px;
+}
+
+.library .score {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+  padding: 10px 14px;
+  text-align: left;
+}
+
+.library .name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+}
+
+.library .sub,
+.library .delete {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* ---------- 譜面表示 ---------- */
+
+.viewer {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: #111214;
+  user-select: none;
+}
+
+.page {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  background: #fff;
+}
+
+.divider {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 3px;
+  margin-top: -1.5px;
+  background: var(--accent);
+  pointer-events: none;
+}
+
+.progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 5px;
+  background: rgb(0 0 0 / 25%);
+  pointer-events: none;
+}
+
+.progress > div {
+  height: 100%;
+  background: var(--accent);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+.count {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: min(40vw, 40vh);
+  font-weight: 700;
+  color: var(--accent);
+  text-shadow: 0 0 24px rgb(0 0 0 / 60%);
+  pointer-events: none;
+}
+
+.message {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 24px;
+  color: var(--muted);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+  overflow-x: auto;
+}
+
+.toolbar > * {
+  flex: none;
+}
+
+.pageno {
+  min-width: 4.5em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.segmented {
+  display: flex;
+}
+
+.segmented button {
+  border-radius: 0;
+}
+
+.segmented button:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.segmented button:last-child {
+  border-radius: 0 8px 8px 0;
+  border-left: 0;
+}
+
+.segmented button[aria-pressed='true'] {
+  background: var(--text);
+  color: var(--bg);
+}
+
+.play {
+  min-width: 6em;
+}
+
+.stepper {
+  display: inline-flex;
+  align-items: center;
+}
+
+.stepper button {
+  width: 44px;
+  padding: 0;
+  font-size: 1.2rem;
+}
+
+.stepper output {
+  min-width: 4em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.toolbar > button:last-child {
+  margin-left: auto;
+}
+
+/* ---------- 設定シート ---------- */
+
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 50%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.sheet {
+  width: min(520px, 100%);
+  max-height: 90%;
+  overflow-y: auto;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 16px 16px 0 0;
+  padding: 20px 16px calc(20px + env(safe-area-inset-bottom));
+  display: grid;
+  gap: 12px;
+}
+
+.sheet h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.check {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  min-height: 44px;
+}
+
+.check input {
+  width: 22px;
+  height: 22px;
+  margin: 2px 0 0;
+  accent-color: var(--accent);
+}
+
+.check small {
+  display: block;
+  color: var(--muted);
+}
